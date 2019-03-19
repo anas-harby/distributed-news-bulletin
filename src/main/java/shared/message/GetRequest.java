@@ -1,4 +1,4 @@
-package message;
+package shared.message;
 
 public class GetRequest extends Request {
     public Type getType() {

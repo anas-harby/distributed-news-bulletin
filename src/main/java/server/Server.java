@@ -1,8 +1,8 @@
 package server;
 
-import message.PostRequest;
-import message.Request;
-import message.Response;
+import shared.message.PostRequest;
+import shared.message.Request;
+import shared.message.Response;
 import shared.Config;
 
 import java.io.*;

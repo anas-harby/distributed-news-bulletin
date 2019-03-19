@@ -1,10 +1,10 @@
 package client;
 
 import com.beust.jcommander.JCommander;
-import message.GetRequest;
-import message.PostRequest;
-import message.Request;
-import message.Response;
+import shared.message.GetRequest;
+import shared.message.PostRequest;
+import shared.message.Request;
+import shared.message.Response;
 import shared.Config;
 
 import java.io.*;
@@ -48,9 +48,7 @@ public class Client { // TODO: always send response containing log info
             Response response = (Response) inputStream.readObject();
             System.out.println("Response received");
             System.out.println("Data: " + response.getData());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
     }
