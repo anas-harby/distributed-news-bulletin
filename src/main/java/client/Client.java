@@ -1,6 +1,5 @@
 package client;
 
-import com.beust.jcommander.JCommander;
 import shared.message.GetRequest;
 import shared.message.PostRequest;
 import shared.message.Request;
@@ -70,11 +69,5 @@ public class Client { // TODO: always send response containing log info
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public static void main(String[] args) {
-        ClientArgs clientArgs = new ClientArgs();
-        new JCommander(clientArgs, args);
-        new Client(clientArgs.getId(), clientArgs.getMode());
     }
 }
