@@ -19,9 +19,9 @@ public class Client { // TODO: always send response containing log info
         init();
 
         if (mode.equals(ClientArgs.READER))
-            sendReadRequest();
+            sendGetRequest();
         else if (mode.equals(ClientArgs.WRITER))
-            sendWriteRequest(id);
+            sendPostRequest(id);
 
         terminate();
     }
@@ -38,7 +38,7 @@ public class Client { // TODO: always send response containing log info
         }
     }
 
-    private void sendReadRequest() {
+    private void sendGetRequest() {
         try {
             Request request = new GetRequest();
             outputStream.writeObject(request);
@@ -52,7 +52,7 @@ public class Client { // TODO: always send response containing log info
         }
     }
 
-    private void sendWriteRequest(int data) {
+    private void sendPostRequest(int data) {
         try {
             Request request = new PostRequest(data);
             outputStream.writeObject(request);

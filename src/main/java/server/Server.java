@@ -11,39 +11,23 @@ import java.net.Socket;
 
 public class Server {
     private ServerSocket serverSocket;
-    private Socket clientSocket;
-    private ObjectInputStream inputStream;
-    private ObjectOutputStream outputStream;
+    private int expectedNumOfRequests;
 
     Server() {
         try {
             serverSocket = new ServerSocket(Config.getServerPort());
+            expectedNumOfRequests = Config.getNumOfAccesses() * (Config.getNumOfReaders() + Config.getNumOfWriters());
             System.out.println("--Server started--");
             System.out.println("Waiting for clients...");
+            System.out.println("----------------------");
 
-            clientSocket = serverSocket.accept();
-            System.out.println("Client connection accepted");
-
-            inputStream = new ObjectInputStream(clientSocket.getInputStream());
-            outputStream = new ObjectOutputStream(clientSocket.getOutputStream());
-
-            Request request = (Request) inputStream.readObject();
-            System.out.println(request.getType() + " request received");
-
-            if (request.getType() == Request.Type.GET) {
-                Response response = new Response(1234);
-                outputStream.writeObject(response);
-                System.out.println("Response sent");
-            } else if (request.getType() == Request.Type.POST) {
-                System.out.println("Data: " + ((PostRequest) request).getData());
+            while (expectedNumOfRequests > 0) { // TODO: check condition
+                new Thread(new WorkerThread(serverSocket.accept())).start();
+                expectedNumOfRequests--;
             }
 
-            clientSocket.close();
-            System.out.println("--Connection closed--");
         } catch (IOException e) {
             System.out.println(e);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
         }
     }
 
