@@ -1,17 +1,14 @@
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Dispatcher {
-    private Map<String, Thread> workingThreads;
+    private ExecutorService executorService = null;
 
-    public Dispatcher() {
-        this.workingThreads = new HashMap<>();
+    public Dispatcher(int numThreads) {
+        this.executorService = Executors.newFixedThreadPool(numThreads);
     }
 
-    public void dispatch(String id, Runnable runnable) {
-        this.workingThreads.putIfAbsent(id, new Thread(runnable));
-        if (this.workingThreads.get(id).isAlive())
-            throw new RuntimeException("Thread is still alive. Unable to dispatch");
-        this.workingThreads.get(id).start();
+    public void dispatch(Runnable runnable) {
+        this.executorService.submit(runnable);
     }
 }
