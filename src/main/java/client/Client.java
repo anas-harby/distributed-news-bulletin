@@ -8,26 +8,39 @@ import shared.Config;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 
-public class Client { // TODO: always send response containing log info
+public class Client {
+
+    private int id;
+    private Type type;
 
     private Socket socket;
     private ObjectInputStream inputStream;
     private ObjectOutputStream outputStream;
 
-    Client(int id, String mode) {
-        init();
+    private Map<Type, Runnable> requestMap;
 
-        if (mode.equals(ClientArgs.READER))
-            sendGetRequest();
-        else if (mode.equals(ClientArgs.WRITER))
-            sendPostRequest(id);
+    public enum Type {
+        READER,
+        WRITER
+    }
+
+    Client(int id, String mode) {
+        init(id, mode);
+        initRequestMap();
+
+        requestMap.get(type).run();
 
         terminate();
     }
 
-    private void init() {
+    private void init(int id, String mode) {
         try {
+            this.id = id;
+            type = mode.equals(ClientArgs.READER) ? Type.READER : Type.WRITER;
+
             socket = new Socket(Config.getServerAddress(), Config.getServerPort());
             System.out.println("--Connected--");
 
@@ -38,9 +51,15 @@ public class Client { // TODO: always send response containing log info
         }
     }
 
+    private void initRequestMap() {
+        requestMap = new HashMap<>();
+        requestMap.put(Type.READER, this::sendGetRequest);
+        requestMap.put(Type.WRITER, this::sendPostRequest);
+    }
+
     private void sendGetRequest() {
         try {
-            Request request = new GetRequest();
+            Request request = new GetRequest(id);
             outputStream.writeObject(request);
             System.out.println("GET request sent");
 
@@ -52,9 +71,9 @@ public class Client { // TODO: always send response containing log info
         }
     }
 
-    private void sendPostRequest(int data) {
+    private void sendPostRequest() {
         try {
-            Request request = new PostRequest(data);
+            Request request = new PostRequest(id, id);
             outputStream.writeObject(request);
             System.out.println("POST request sent");
         } catch (IOException e) {

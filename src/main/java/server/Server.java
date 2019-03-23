@@ -1,13 +1,9 @@
 package server;
 
-import shared.message.PostRequest;
-import shared.message.Request;
-import shared.message.Response;
 import shared.Config;
 
 import java.io.*;
 import java.net.ServerSocket;
-import java.net.Socket;
 
 public class Server {
     private ServerSocket serverSocket;
@@ -29,6 +25,8 @@ public class Server {
         } catch (IOException e) {
             System.out.println(e);
         }
+
+        // TODO: join
     }
 
     public static void main(String[] args) {

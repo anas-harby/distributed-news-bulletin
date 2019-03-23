@@ -48,7 +48,8 @@ public class WorkerThread implements Runnable {
 
     private void handleGetRequest(Request request) {
         try {
-            Response response = new Response(1234); // TODO: read news from the system and write it to the socket
+            Response response = new Response();
+            response.setData(1234); // TODO: read news from the system and write it to the socket
             outputStream.writeObject(response);
             System.out.println("Response sent");
         } catch (IOException e) {
