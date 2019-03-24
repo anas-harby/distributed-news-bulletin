@@ -7,6 +7,7 @@ public abstract class SshRunnable implements Runnable {
     private int numberOfAccesses;
     private static final int MAX_SLEEPING_INTERVAL = 10000;
 
+    //TODO: Forward id
     public SshRunnable(String user, String host, int port, int numberOfAccesses) throws SshConnection.SshException {
         this.sshConnection = new SshConnection(user, host, port);
         this.numberOfAccesses = numberOfAccesses;

@@ -12,16 +12,12 @@ public class SshConnection {
         }
     }
     private String username;
-    private String host;
-    private int port;
 
     private JSch jsch;
     private Session session;
 
     public SshConnection(String username, String host, int port) throws SshException {
         this.username = username;
-        this.host = host;
-        this.port = port;
 
         try {
             this.jsch = new JSch();

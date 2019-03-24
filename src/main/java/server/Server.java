@@ -18,7 +18,7 @@ public class Server {
             System.out.println("----------------------");
 
             while (expectedNumOfRequests > 0) { // TODO: check condition
-                new Thread(new WorkerThread(serverSocket.accept())).start();
+                new Thread(new WorkerThread(serverSocket.accept())).start(); //TODO: Use Dispatcher instead
                 expectedNumOfRequests--;
             }
 
@@ -26,7 +26,7 @@ public class Server {
             System.out.println(e);
         }
 
-        // TODO: join
+        // TODO: join, use shutdown instead
     }
 
     public static void main(String[] args) {

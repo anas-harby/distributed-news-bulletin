@@ -8,6 +8,6 @@ public class SshReader extends SshRunnable {
     @Override
     public void executeCommand() throws SshConnection.SshException {
         //TODO: figure out what command to run.
-        super.sshConnection.runCommand("RUN CLIENT --READ MODE");
+        super.sshConnection.runCommand("RUN CLIENT -id 5 -mode r");
     }
 }

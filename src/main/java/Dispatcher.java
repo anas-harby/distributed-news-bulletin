@@ -11,4 +11,8 @@ public class Dispatcher {
     public void dispatch(Runnable runnable) {
         this.executorService.submit(runnable);
     }
+
+    public void shutdown() {
+        this.executorService.shutdown();
+    }
 }
