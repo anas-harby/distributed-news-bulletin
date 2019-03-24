@@ -4,24 +4,23 @@ import java.io.Serializable;
 
 public class Response implements Serializable {
 
-    private int requestNumber;
-    private int serviceNumber;
+    private int requestNum;
+    private int serviceNum;
     private int data;
-
-    public int getRequestNumber() {
-        return requestNumber;
+    public int getRequestNum() {
+        return requestNum;
     }
 
-    public void setRequestNumber(int requestNumber) {
-        this.requestNumber = requestNumber;
+    public void setRequestNum(int requestNum) {
+        this.requestNum = requestNum;
     }
 
-    public int getServiceNumber() {
-        return serviceNumber;
+    public int getServiceNum() {
+        return serviceNum;
     }
 
-    public void setServiceNumber(int serviceNumber) {
-        this.serviceNumber = serviceNumber;
+    public void setServiceNum(int serviceNum) {
+        this.serviceNum = serviceNum;
     }
 
     public void setData(int data) {

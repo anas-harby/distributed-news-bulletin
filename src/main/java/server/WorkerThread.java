@@ -3,6 +3,7 @@ package server;
 import shared.message.PostRequest;
 import shared.message.Request;
 import shared.message.Response;
+import shared.news.NewsBulletin;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -11,12 +12,14 @@ import java.net.Socket;
 
 public class WorkerThread implements Runnable {
 
+    private int requestNum;
+    private NewsBulletin newsBulletin;
     private Socket socket;
     private ObjectInputStream inputStream;
     private ObjectOutputStream outputStream;
 
-    WorkerThread(Socket socket) {
-        init(socket);
+    WorkerThread(int requestNum, NewsBulletin newsBulletin, Socket socket) {
+        init(requestNum, newsBulletin, socket);
     }
 
     @Override
@@ -25,7 +28,7 @@ public class WorkerThread implements Runnable {
             Request request = (Request) inputStream.readObject();
             System.out.println(request.getType() + " request received");
 
-            if (request.getType() == Request.Type.GET)
+            if (request.getType() == Request.Type.GET) // TODO: map
                 handleGetRequest(request);
             else if (request.getType() == Request.Type.POST)
                 handlePostRequest(request);
@@ -33,10 +36,12 @@ public class WorkerThread implements Runnable {
             e.printStackTrace();
         }
 
-        terminate(); // TODO: check
+        terminate();
     }
 
-    private void init(Socket socket) {
+    private void init(int requestNum, NewsBulletin newsBulletin, Socket socket) {
+        this.requestNum = requestNum;
+        this.newsBulletin = newsBulletin;
         this.socket = socket;
         try {
             inputStream = new ObjectInputStream(socket.getInputStream());
@@ -48,18 +53,32 @@ public class WorkerThread implements Runnable {
 
     private void handleGetRequest(Request request) {
         try {
+            NewsBulletin.NewsInfo newsInfo = newsBulletin.getCurrentNews();
             Response response = new Response();
-            response.setData(1234); // TODO: read news from the system and write it to the socket
+            response.setRequestNum(requestNum);
+            response.setServiceNum(newsInfo.getServiceNum());
+            response.setData(newsInfo.getNews());
             outputStream.writeObject(response);
             System.out.println("Response sent");
+            // TODO: log
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     private void handlePostRequest(Request request) {
-        // TODO: read news from the POST request data and write it to the system
-        System.out.println("Data: " + ((PostRequest) request).getData());
+        try {
+            NewsBulletin.NewsInfo newsInfo = newsBulletin.setCurrentNews(((PostRequest) request).getData());
+            System.out.println("Data: " + newsInfo.getNews());
+            Response response = new Response();
+            response.setRequestNum(requestNum);
+            response.setServiceNum(newsInfo.getServiceNum());
+            outputStream.writeObject(response);
+            System.out.println("Response sent");
+            // TODO: log
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void terminate() {
