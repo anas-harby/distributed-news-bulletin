@@ -4,29 +4,30 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class Logger {
-    private FileWriter fileWriter = null;
+public abstract class Logger {
+    private File logFile;
     private static final String LOG_PATH = "./logs/log$.txt";
 
     public Logger(int id) throws IOException {
-        File logFile = initFile(LOG_PATH.replace("$", String.valueOf(id)));
-        this.fileWriter = new FileWriter(logFile, true);
+        this.logFile = initFile(LOG_PATH.replace("$", String.valueOf(id)));
     }
 
     private File initFile(String path) throws IOException {
         File logFile = new File(path);
-        if (!logFile.exists())
+        if (!logFile.exists()) {
             logFile.createNewFile();
+            this.writeHeaders(logFile);
+        }
         return logFile;
     }
 
     public synchronized void writeToFile(String[] values) throws IOException {
         String toWrite = String.join("\t", values);
-        this.fileWriter.write(toWrite);
-        this.fileWriter.flush();
+        FileWriter fileWriter = new FileWriter(this.logFile, true);
+        fileWriter.write(toWrite);
+        fileWriter.flush();
+        fileWriter.close();
     }
 
-    public synchronized void close() throws IOException {
-        this.fileWriter.close();
-    }
+    public abstract void writeHeaders(File logFile);
 }
