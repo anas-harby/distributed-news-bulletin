@@ -16,8 +16,8 @@ public abstract class Logger {
         this.logFile = initFile(LOG_PATH.replace("$", String.valueOf(id)));
     }
 
-    public Logger() {
-        // TODO: log files names
+    public Logger(String type) throws IOException{
+        this.logFile = initFile(LOG_PATH.replace("$", "-" + type));
     }
 
     public static void clear() {
