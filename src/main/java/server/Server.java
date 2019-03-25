@@ -16,7 +16,7 @@ public class Server {
     private NewsBulletin newsBulletin;
     private ServerSocket serverSocket;
 
-    Server() {
+    public Server() {
         try {
             init();
             while (nextRequestNum <= expectedNumOfRequests)
@@ -41,9 +41,5 @@ public class Server {
 
     private void terminate() {
         dispatcher.shutdown();
-    }
-
-    public static void main(String[] args) {
-        new Server();
     }
 }

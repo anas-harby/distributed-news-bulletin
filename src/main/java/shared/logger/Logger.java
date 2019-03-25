@@ -3,26 +3,36 @@ package shared.logger;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Comparator;
 
 public abstract class Logger {
     private File logFile;
     private static final String LOG_PATH = "./logs/log$.txt";
 
-    static {
-        new File("logs").mkdir();
-    }
-
     public Logger(int id) throws IOException {
         this.logFile = initFile(LOG_PATH.replace("$", String.valueOf(id)));
     }
 
-    private File initFile(String path) throws IOException {
-        File logFile = new File(path);
-        if (!logFile.exists()) {
-            logFile.createNewFile();
-            this.writeHeaders(logFile);
+    public Logger() {
+        // TODO: log files names
+    }
+
+    public static void clear() {
+        File logDir = new File("logs");
+        if (logDir.exists()) {
+            try {
+                Files.walk(Paths.get(logDir.getPath()))
+                        .sorted(Comparator.reverseOrder())
+                        .map(Path::toFile)
+                        .forEach(File::delete);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        return logFile;
+        logDir.mkdir();
     }
 
     public synchronized void writeToFile(String[] values) throws IOException {
@@ -34,4 +44,13 @@ public abstract class Logger {
     }
 
     public abstract void writeHeaders(File logFile);
+
+    private File initFile(String path) throws IOException {
+        File logFile = new File(path);
+        if (!logFile.exists()) {
+            logFile.createNewFile();
+            this.writeHeaders(logFile);
+        }
+        return logFile;
+    }
 }
