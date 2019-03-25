@@ -20,8 +20,8 @@ public class Config {
     private static int numOfAccesses;
 
     static {
-        readers = new ArrayList<String>();
-        writers = new ArrayList<String>();
+        readers = new ArrayList<>();
+        writers = new ArrayList<>();
 
         setConfig();
     }
@@ -67,11 +67,11 @@ public class Config {
 
             numOfReaders = Integer.parseInt(prop.getProperty("RW.numberOfReaders"));
             for (int i = 0; i < numOfReaders; i++)
-                readers.add(prop.getProperty("RW.reader") + i);
+                readers.add(prop.getProperty("RW.reader" + i));
 
             numOfWriters = Integer.parseInt(prop.getProperty("RW.numberOfWriters"));
             for (int i = 0; i < numOfWriters; i++)
-                readers.add(prop.getProperty("RW.writer") + i);
+                writers.add(prop.getProperty("RW.writer" + i));
 
             numOfAccesses = Integer.parseInt(prop.getProperty("RW.numberOfAccesses"));
         } catch (IOException e) {

@@ -6,24 +6,25 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class SshConnection {
-    class SshException extends Exception {
+    public class SshException extends Exception {
         SshException(Exception e) {
             super(e.getMessage(), e.getCause());
         }
     }
     private String username;
-
+    private String host;
+    private int port;
     private JSch jsch;
     private Session session;
 
     public SshConnection(String username, String host, int port) throws SshException {
         this.username = username;
+        this.host = host;
+        this.port = port;
 
         try {
             this.jsch = new JSch();
             this.setupSshKeys();
-            this.session = this.jsch.getSession(username, host, port);
-            this.configureSession();
         } catch (JSchException e) {
             throw new SshException(e);
         }
@@ -45,6 +46,8 @@ public class SshConnection {
 
     public void connect() throws SshException {
         try {
+            this.session = this.jsch.getSession(username, host, port);
+            this.configureSession();
             this.session.connect();
         } catch (JSchException e) {
             throw new SshException(e);
@@ -77,7 +80,6 @@ public class SshConnection {
                     Thread.sleep(100);
                 } catch (Exception ignored) { }
             }
-
             channel.disconnect();
         } catch (JSchException | IOException e) {
             throw new SshException(e);

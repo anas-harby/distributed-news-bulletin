@@ -2,37 +2,45 @@ package ssh;
 
 import java.util.Random;
 
-public abstract class SshRunnable implements Runnable {
-    SshConnection sshConnection;
+public class SshRunnable implements Runnable {
+    public enum Mode {
+        READ, WRITE
+    }
+    private SshConnection sshConnection;
     private int numberOfAccesses;
+    private int id;
+    private Mode mode;
     private static final int MAX_SLEEPING_INTERVAL = 10000;
 
-    //TODO: Forward id
-    public SshRunnable(String user, String host, int port, int numberOfAccesses) throws SshConnection.SshException {
+    public SshRunnable(String user, String host, int port, int numberOfAccesses, int id, Mode mode)
+            throws SshConnection.SshException {
         this.sshConnection = new SshConnection(user, host, port);
         this.numberOfAccesses = numberOfAccesses;
+        this.id = id;
+        this.mode = mode;
     }
 
-    public abstract void executeCommand() throws SshConnection.SshException;
+    private void executeCommand() throws SshConnection.SshException {
+        String path = System.getProperty("user.dir").replaceAll(" ", "\\\\ ");
+        String command = "cd " + path + " ;"
+                       + "java -jar Client*.jar -id " + id + " -mode " + (this.mode == Mode.READ ? "r" : "w");
+        System.out.println("Executing ssh command: " + command);
+        this.sshConnection.runCommand(command);
+    }
 
     @Override
     public void run() {
-        while (this.numberOfAccesses > 0) {
-            try {
+
+        try {
+            while (this.numberOfAccesses > 0) {
                 sshConnection.connect();
                 this.executeCommand();
                 sshConnection.disconnect();
-            } catch (SshConnection.SshException e) {
-                e.printStackTrace();
-            }
-
-            try {
                 Thread.sleep(new Random().nextInt(MAX_SLEEPING_INTERVAL));
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                this.numberOfAccesses--;
             }
-
-            this.numberOfAccesses--;
+        } catch (SshConnection.SshException | InterruptedException e) {
+            System.out.println("");
         }
     }
 }
