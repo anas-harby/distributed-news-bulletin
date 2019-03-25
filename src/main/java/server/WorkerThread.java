@@ -1,9 +1,9 @@
 package server;
 
+import shared.logger.Logger;
 import shared.message.PostRequest;
 import shared.message.Request;
 import shared.message.Response;
-import shared.news.NewsBulletin;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -14,12 +14,16 @@ public class WorkerThread implements Runnable {
 
     private int requestNum;
     private NewsBulletin newsBulletin;
+
     private Socket socket;
     private ObjectInputStream inputStream;
     private ObjectOutputStream outputStream;
 
-    WorkerThread(int requestNum, NewsBulletin newsBulletin, Socket socket) {
-        init(requestNum, newsBulletin, socket);
+    private Logger readLogger;
+    private Logger writeLogger;
+
+    WorkerThread(int requestNum, NewsBulletin newsBulletin, Socket socket, Logger readLogger, Logger writeLogger) {
+        init(requestNum, newsBulletin, socket, readLogger, writeLogger);
     }
 
     @Override
@@ -39,9 +43,10 @@ public class WorkerThread implements Runnable {
         terminate();
     }
 
-    private void init(int requestNum, NewsBulletin newsBulletin, Socket socket) {
+    private void init(int requestNum, NewsBulletin newsBulletin, Socket socket, Logger readLogger, Logger writeLogger) {
         this.requestNum = requestNum;
         this.newsBulletin = newsBulletin;
+
         this.socket = socket;
         try {
             inputStream = new ObjectInputStream(socket.getInputStream());
@@ -49,6 +54,9 @@ public class WorkerThread implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        this.readLogger = readLogger;
+        this.writeLogger = writeLogger;
     }
 
     private void handleGetRequest(Request request) {
@@ -60,7 +68,11 @@ public class WorkerThread implements Runnable {
             response.setData(newsInfo.getNews());
             outputStream.writeObject(response);
             System.out.println("Response sent");
-            // TODO: log
+
+            readLogger.writeToFile(new String[]{Integer.toString(newsInfo.getServiceNum()),
+                    Integer.toString(newsInfo.getNews()),
+                    Integer.toString(request.getClientID()),
+                    Integer.toString(newsInfo.getNumOfReaders())});
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -75,7 +87,10 @@ public class WorkerThread implements Runnable {
             response.setServiceNum(newsInfo.getServiceNum());
             outputStream.writeObject(response);
             System.out.println("Response sent");
-            // TODO: log
+
+            writeLogger.writeToFile(new String[]{Integer.toString(newsInfo.getServiceNum()),
+                    Integer.toString(newsInfo.getNews()),
+                    Integer.toString(request.getClientID())});
         } catch (IOException e) {
             e.printStackTrace();
         }

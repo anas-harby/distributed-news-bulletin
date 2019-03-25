@@ -2,9 +2,9 @@ package server;
 
 import shared.Config;
 import shared.Dispatcher;
-import shared.news.NewsBulletin;
 import ssh.SshConnection;
 import ssh.SshRunnable;
+import shared.logger.Logger;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -18,6 +18,9 @@ public class Server {
     private NewsBulletin newsBulletin;
     private ServerSocket serverSocket;
     private static final int DEFAULT_SSH_PORT = 22;
+
+    private Logger readLogger;
+    private Logger writeLogger;
 
     public Server() {
         try {
@@ -57,7 +60,8 @@ public class Server {
 
             /* Dispatch worker threads that handle incoming requests */
             while (nextRequestNum <= expectedNumOfRequests)
-                requestsDispatcher.dispatch(new WorkerThread(nextRequestNum++, newsBulletin, serverSocket.accept()));
+                requestsDispatcher.dispatch(new WorkerThread(nextRequestNum++, newsBulletin, serverSocket.accept(),
+                        readLogger, writeLogger));
         } catch (IOException e) {
             System.out.println(e);
         }
@@ -74,6 +78,40 @@ public class Server {
         System.out.println("--Server started--");
         System.out.println("Waiting for clients...");
         System.out.println("----------------------");
+
+        initLoggers();
+    }
+
+    private void initLoggers() {
+        try {
+            readLogger = new Logger("readers") {
+                @Override
+                public void writeHeaders(File logFile) {
+                    try {
+                        FileWriter writer = new FileWriter(logFile, true);
+                        writer.write(String.join("\t", "sSeq", "oVal", "r-ID", "rNum") + "\n");
+                        writer.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+
+            writeLogger = new Logger("writers") {
+                @Override
+                public void writeHeaders(File logFile) {
+                    try {
+                        FileWriter writer = new FileWriter(logFile, true);
+                        writer.write(String.join("\t", "sSeq", "oVal", "w-ID") + "\n");
+                        writer.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void terminate() {

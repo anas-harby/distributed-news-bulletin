@@ -1,4 +1,4 @@
-package shared.news;
+package server;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -9,10 +9,12 @@ public class NewsBulletin {
 
         private int serviceNum;
         private int news;
+        private int numOfReaders;
 
-        NewsInfo(int serviceNum, int news) {
+        NewsInfo(int serviceNum, int news, int numOfReaders) {
             this.serviceNum = serviceNum;
             this.news = news;
+            this.numOfReaders = numOfReaders;
         }
 
         public int getServiceNum() {
@@ -22,10 +24,14 @@ public class NewsBulletin {
         public int getNews() {
             return news;
         }
+
+        public int getNumOfReaders() {
+            return numOfReaders;
+        }
     }
 
     private AtomicInteger serviceNum;
-    private ReadWriteLock readWriteLock;
+    private ReentrantReadWriteLock readWriteLock;
     private int news = 0;
 
     public NewsBulletin() {
@@ -35,7 +41,7 @@ public class NewsBulletin {
 
     public NewsInfo getCurrentNews() {
         this.readWriteLock.readLock().lock();
-        NewsInfo info = new NewsInfo(this.serviceNum.getAndIncrement(), this.news);
+        NewsInfo info = new NewsInfo(this.serviceNum.getAndIncrement(), this.news, readWriteLock.getReadLockCount());
         this.readWriteLock.readLock().unlock();
         return info;
     }
@@ -43,7 +49,7 @@ public class NewsBulletin {
     public NewsInfo setCurrentNews(int news) {
         this.readWriteLock.writeLock().lock();
         this.news = news;
-        NewsInfo info = new NewsInfo(this.serviceNum.getAndIncrement(), news);
+        NewsInfo info = new NewsInfo(this.serviceNum.getAndIncrement(), news, 0);
         this.readWriteLock.writeLock().unlock();
         return info;
     }
