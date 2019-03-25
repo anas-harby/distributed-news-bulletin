@@ -5,7 +5,6 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class NewsBulletin {
-    //TODO: Check if generalizing this class is preferable.
     public class NewsInfo {
 
         private int serviceNum;

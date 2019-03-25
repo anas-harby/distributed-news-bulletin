@@ -8,6 +8,10 @@ public abstract class Logger {
     private File logFile;
     private static final String LOG_PATH = "./logs/log$.txt";
 
+    static {
+        new File("logs").mkdir();
+    }
+
     public Logger(int id) throws IOException {
         this.logFile = initFile(LOG_PATH.replace("$", String.valueOf(id)));
     }
@@ -22,7 +26,7 @@ public abstract class Logger {
     }
 
     public synchronized void writeToFile(String[] values) throws IOException {
-        String toWrite = String.join("\t", values);
+        String toWrite = String.join("\t\t", values) + "\n";
         FileWriter fileWriter = new FileWriter(this.logFile, true);
         fileWriter.write(toWrite);
         fileWriter.flush();
