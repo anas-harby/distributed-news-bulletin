@@ -96,7 +96,7 @@ public class WorkerThread implements Runnable {
     private void terminate() {
         try {
             socket.close();
-            System.out.println("--HttpClient connection closed--");
+            System.out.println("--Client connection closed--");
             System.out.println();
         } catch (IOException e) {
             e.printStackTrace();

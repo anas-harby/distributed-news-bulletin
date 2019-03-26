@@ -21,7 +21,8 @@ public class NewsBulletinRmiWrapperImpl implements NewsBulletinRmiWrapper {
         NewsBulletin.NewsInfo newsInfo = this.newsBulletin.getCurrentNews();
 
         try {
-            this.readLogger.writeToFile(new String[]{Integer.toString(newsInfo.getServiceNum()),
+            this.readLogger.writeToFile(new String[]{
+                    Integer.toString(newsInfo.getServiceNum()),
                     Integer.toString(newsInfo.getNews()),
                     Integer.toString(clientID),
                     Integer.toString(newsInfo.getNumOfReaders())});
@@ -37,7 +38,8 @@ public class NewsBulletinRmiWrapperImpl implements NewsBulletinRmiWrapper {
         NewsBulletin.NewsInfo newsInfo = this.newsBulletin.setCurrentNews(news);
 
         try {
-            writeLogger.writeToFile(new String[]{Integer.toString(newsInfo.getServiceNum()),
+            writeLogger.writeToFile(new String[]{
+                    Integer.toString(newsInfo.getServiceNum()),
                     Integer.toString(newsInfo.getNews()),
                     Integer.toString(clientID)});
         } catch (IOException e) {

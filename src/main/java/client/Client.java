@@ -43,8 +43,8 @@ public abstract class Client {
                 public void writeHeaders(File logFile) {
                     try {
                         FileWriter writer = new FileWriter(logFile, true);
-                        writer.write("HttpClient Name: " + id + "\n");
-                        writer.write("HttpClient Type: " + type + "\n\n");
+                        writer.write("Client Name: " + id + "\n");
+                        writer.write("Client Type: " + type + "\n\n");
                         writer.write(String.join("\t", "rSeq", "sSeq", type == Type.READER ? "oVal" : "") + "\n");
                         writer.close();
                     } catch (IOException e) {

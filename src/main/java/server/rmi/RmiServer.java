@@ -23,8 +23,8 @@ public class RmiServer implements Server {
     private static final String RMI_KEY = "news";
 
     public RmiServer() {
-        init();
         initLoggers();
+        init();
     }
 
     private void init() {
