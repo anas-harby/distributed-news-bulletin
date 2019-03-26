@@ -5,7 +5,7 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 
 public class ServerArgs {
-    class ArchValidator implements IParameterValidator {
+    static class ArchValidator implements IParameterValidator {
         @Override
         public void validate(String argName, String argValue) throws ParameterException {
             if (!(argValue.equals(ServerArgs.HTTP) || argValue.equals(ServerArgs.RMI)))

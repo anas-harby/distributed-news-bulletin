@@ -39,8 +39,6 @@ public class SshRunnable implements Runnable {
                 Thread.sleep(new Random().nextInt(MAX_SLEEPING_INTERVAL));
                 this.numberOfAccesses--;
             }
-        } catch (SshConnection.SshException | InterruptedException e) {
-            System.out.println("");
-        }
+        } catch (SshConnection.SshException | InterruptedException ignored) { }
     }
 }
