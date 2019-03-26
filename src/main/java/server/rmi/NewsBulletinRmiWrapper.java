@@ -7,4 +7,5 @@ import java.rmi.Remote;
 public interface NewsBulletinRmiWrapper extends Remote {
     NewsBulletin.NewsInfo getCurrentNews();
     NewsBulletin.NewsInfo setCurrentNews(int news);
+    int getNumRequests();
 }

@@ -11,8 +11,6 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 public class WorkerThread implements Runnable {
-
-    private int requestNum;
     private NewsBulletin newsBulletin;
 
     private Socket socket;
@@ -22,8 +20,8 @@ public class WorkerThread implements Runnable {
     private Logger readLogger;
     private Logger writeLogger;
 
-    WorkerThread(int requestNum, NewsBulletin newsBulletin, Socket socket, Logger readLogger, Logger writeLogger) {
-        init(requestNum, newsBulletin, socket, readLogger, writeLogger);
+    public WorkerThread(NewsBulletin newsBulletin, Socket socket, Logger readLogger, Logger writeLogger) {
+        init(newsBulletin, socket, readLogger, writeLogger);
     }
 
     @Override
@@ -43,8 +41,7 @@ public class WorkerThread implements Runnable {
         terminate();
     }
 
-    private void init(int requestNum, NewsBulletin newsBulletin, Socket socket, Logger readLogger, Logger writeLogger) {
-        this.requestNum = requestNum;
+    private void init(NewsBulletin newsBulletin, Socket socket, Logger readLogger, Logger writeLogger) {
         this.newsBulletin = newsBulletin;
 
         this.socket = socket;
@@ -63,7 +60,7 @@ public class WorkerThread implements Runnable {
         try {
             NewsBulletin.NewsInfo newsInfo = newsBulletin.getCurrentNews();
             Response response = new Response();
-            response.setRequestNum(requestNum);
+            response.setRequestNum(newsInfo.getRequestNum());
             response.setServiceNum(newsInfo.getServiceNum());
             response.setData(newsInfo.getNews());
             outputStream.writeObject(response);
@@ -83,7 +80,7 @@ public class WorkerThread implements Runnable {
             NewsBulletin.NewsInfo newsInfo = newsBulletin.setCurrentNews(((PostRequest) request).getData());
             System.out.println("Data: " + newsInfo.getNews());
             Response response = new Response();
-            response.setRequestNum(requestNum);
+            response.setRequestNum(newsInfo.getRequestNum());
             response.setServiceNum(newsInfo.getServiceNum());
             outputStream.writeObject(response);
             System.out.println("Response sent");

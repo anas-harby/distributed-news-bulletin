@@ -1,4 +1,4 @@
-import server.Server;
+import server.http.HttpServer;
 import shared.Config;
 import shared.Dispatcher;
 import shared.logger.Logger;
@@ -16,7 +16,7 @@ public class Start {
 
     public static void main(String[] args) {
         Logger.clear();
-        Server server = new Server();
+        HttpServer server = new HttpServer();
         try {
             server.listen();
             System.out.println("--Server started--");
