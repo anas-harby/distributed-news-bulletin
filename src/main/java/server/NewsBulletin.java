@@ -1,12 +1,12 @@
 package server;
 
+import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class NewsBulletin {
-    public class NewsInfo {
-
+    public class NewsInfo implements Serializable {
         private int serviceNum;
         private int news;
         private int numOfReaders;
@@ -32,7 +32,7 @@ public class NewsBulletin {
 
     private AtomicInteger serviceNum;
     private ReentrantReadWriteLock readWriteLock;
-    private int news = 0;
+    private int news = -1;
 
     public NewsBulletin() {
         this.serviceNum = new AtomicInteger(1);
