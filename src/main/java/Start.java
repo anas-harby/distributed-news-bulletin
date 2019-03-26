@@ -1,4 +1,5 @@
 import server.Server;
+import server.ServerArgs;
 import server.ServerRunner;
 import shared.Config;
 import shared.Dispatcher;
@@ -18,7 +19,7 @@ public class Start {
             System.out.println("Waiting for clients...");
             System.out.println("----------------------");
 
-            dispatchSshThreads();
+            dispatchSshThreads(ServerRunner.resolveArgs(args).getArch());
             server.accept();
             server.terminate();
         } catch (Server.ServerException e) {
@@ -26,7 +27,7 @@ public class Start {
         }
     }
 
-    private static void dispatchSshThreads() {
+    private static void dispatchSshThreads(String arch) {
         Dispatcher sshDispatcher = new Dispatcher(
                 Config.getNumOfReaders() + Config.getNumOfWriters());
         /* Dispatch Readers ssh invocation */
@@ -38,7 +39,8 @@ public class Start {
                         DEFAULT_SSH_PORT,
                         Config.getNumOfAccesses(),
                         i ,
-                        SshRunnable.Mode.READ
+                        SshRunnable.Mode.READ,
+                        arch.equals(ServerArgs.HTTP) ? SshRunnable.Arch.HTTP : SshRunnable.Arch.RMI
                 ));
             } catch (SshConnection.SshException e) {
                 e.printStackTrace();
@@ -54,7 +56,8 @@ public class Start {
                         DEFAULT_SSH_PORT,
                         Config.getNumOfAccesses(),
                         i + Config.getNumOfReaders(),
-                        SshRunnable.Mode.WRITE
+                        SshRunnable.Mode.WRITE,
+                        arch.equals(ServerArgs.HTTP) ? SshRunnable.Arch.HTTP : SshRunnable.Arch.RMI
                 ));
             } catch (SshConnection.SshException e) {
                 e.printStackTrace();
