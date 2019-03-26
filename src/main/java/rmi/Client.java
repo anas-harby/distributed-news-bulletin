@@ -9,6 +9,7 @@ public class Client {
     public static void main(String[] args) throws RemoteException, NotBoundException {
         Registry registry = LocateRegistry.getRegistry(null);
         Example stub = (Example) registry.lookup("Example");
+        stub.set(5);
         System.out.println(stub.get());
     }
 }
