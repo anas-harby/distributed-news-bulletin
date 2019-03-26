@@ -1,22 +1,17 @@
-import server.http.HttpServer;
+import server.Server;
+import server.ServerRunner;
 import shared.Config;
 import shared.Dispatcher;
 import shared.logger.Logger;
 import ssh.SshConnection;
 import ssh.SshRunnable;
 
-import java.io.IOException;
-
 public class Start {
-    //TODO: 2. Logger
-    //TODO: 3. shared.Dispatcher
-    //TODO: 4. SSH Command to run
-    //TODO: 5. Integrate all
     private static final int DEFAULT_SSH_PORT = 22;
 
     public static void main(String[] args) {
         Logger.clear();
-        HttpServer server = new HttpServer();
+        Server server = ServerRunner.getServer(args);
         try {
             server.listen();
             System.out.println("--Server started--");
@@ -26,7 +21,7 @@ public class Start {
             dispatchSshThreads();
             server.accept();
             server.terminate();
-        } catch (IOException e) {
+        } catch (Server.ServerException e) {
             e.printStackTrace();
         }
     }
