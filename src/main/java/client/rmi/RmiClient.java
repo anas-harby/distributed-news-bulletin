@@ -40,7 +40,7 @@ public class RmiClient extends Client {
 
     protected void sendGetRequest() {
         try {
-            NewsBulletin.NewsInfo newsInfo = newsBulletinRmiWrapper.getCurrentNews();
+            NewsBulletin.NewsInfo newsInfo = newsBulletinRmiWrapper.getCurrentNews(this.id);
             System.out.println("GET request sent");
             System.out.println("Response received");
 
@@ -54,7 +54,7 @@ public class RmiClient extends Client {
 
     protected void sendPostRequest() {
         try {
-            NewsBulletin.NewsInfo newsInfo = newsBulletinRmiWrapper.setCurrentNews(id);
+            NewsBulletin.NewsInfo newsInfo = newsBulletinRmiWrapper.setCurrentNews(this.id, this.id);
             System.out.println("POST request sent");
             System.out.println("Response received");
 

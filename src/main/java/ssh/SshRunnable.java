@@ -31,7 +31,7 @@ public class SshRunnable implements Runnable {
                        + "java -jar Client*.jar"
                        + " -id " + id
                        + " -mode " + (this.mode == Mode.READ ? "r" : "w")
-                       + " -arch" + (this.arch == Arch.HTTP ? "http" : "rmi");
+                       + " -arch " + (this.arch == Arch.HTTP ? "http" : "rmi");
         System.out.println("Executing ssh command: " + command);
         this.sshConnection.runCommand(command);
     }

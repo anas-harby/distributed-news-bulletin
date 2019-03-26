@@ -19,15 +19,16 @@ public class Start {
             System.out.println("Waiting for clients...");
             System.out.println("----------------------");
 
-            dispatchSshThreads(ServerRunner.resolveArgs(args).getArch());
+            Dispatcher sshDispatcher = dispatchSshThreads(ServerRunner.resolveArgs(args).getArch());
             server.accept();
             server.terminate();
+            sshDispatcher.shutdown();
         } catch (Server.ServerException e) {
             e.printStackTrace();
         }
     }
 
-    private static void dispatchSshThreads(String arch) {
+    private static Dispatcher dispatchSshThreads(String arch) {
         Dispatcher sshDispatcher = new Dispatcher(
                 Config.getNumOfReaders() + Config.getNumOfWriters());
         /* Dispatch Readers ssh invocation */
@@ -63,5 +64,6 @@ public class Start {
                 e.printStackTrace();
             }
         }
+        return sshDispatcher;
     }
 }

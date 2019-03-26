@@ -7,20 +7,17 @@ import java.io.IOException;
 
 public class NewsBulletinRmiWrapperImpl implements NewsBulletinRmiWrapper {
     private NewsBulletin newsBulletin;
-    private int numRequests;
     private Logger readLogger;
     private Logger writeLogger;
 
     public NewsBulletinRmiWrapperImpl(Logger readLogger, Logger writeLogger) {
         this.newsBulletin = new NewsBulletin();
-        this.numRequests = 0;
         this.readLogger = readLogger;
         this.writeLogger = writeLogger;
     }
 
     @Override
     public NewsBulletin.NewsInfo getCurrentNews(int clientID) {
-        this.numRequests++;
         NewsBulletin.NewsInfo newsInfo = this.newsBulletin.getCurrentNews();
 
         try {
@@ -37,7 +34,6 @@ public class NewsBulletinRmiWrapperImpl implements NewsBulletinRmiWrapper {
 
     @Override
     public NewsBulletin.NewsInfo setCurrentNews(int news, int clientID) {
-        this.numRequests++;
         NewsBulletin.NewsInfo newsInfo = this.newsBulletin.setCurrentNews(news);
 
         try {
@@ -52,6 +48,6 @@ public class NewsBulletinRmiWrapperImpl implements NewsBulletinRmiWrapper {
     }
 
     public int getNumRequests() {
-        return this.numRequests;
+        return this.newsBulletin.getNumOfRequests();
     }
 }

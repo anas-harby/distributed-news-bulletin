@@ -43,7 +43,7 @@ public class HttpServer implements Server {
     public void accept() throws ServerException {
         /* Dispatch worker threads that handle incoming requests */
         try {
-            while (newsBulletin.getNumOfRequests() <= expectedNumOfRequests)
+            while (newsBulletin.getNumOfRequests() < expectedNumOfRequests)
                 dispatcher.dispatch(new WorkerThread(newsBulletin, serverSocket.accept(),
                         readLogger, writeLogger));
         } catch (IOException e) {
