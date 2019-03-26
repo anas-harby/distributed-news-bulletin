@@ -6,8 +6,13 @@ import server.rmi.RmiServer;
 
 public class ServerRunner {
     public static Server getServer(String[] args) {
+        ServerArgs serverArgs = resolveArgs(args);
+        return serverArgs.getArch().equals(ServerArgs.HTTP) ? new HttpServer() : new RmiServer();
+    }
+
+    public static ServerArgs resolveArgs(String[] args) {
         ServerArgs serverArgs = new ServerArgs();
         new JCommander(serverArgs, args);
-        return serverArgs.getArch().equals(ServerArgs.HTTP) ? new HttpServer() : new RmiServer();
+        return serverArgs;
     }
 }
