@@ -42,14 +42,9 @@ public class RmiServer implements Server {
             NewsBulletinRmiWrapper stub = (NewsBulletinRmiWrapper) UnicastRemoteObject.exportObject(this.newsBulletin, 0);
             this.registry.rebind(RMI_KEY, stub);
 
-            while (stub.getNumRequests() < this.expectedNumOfRequests) {
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    throw new ServerException(e);
-                }
-            }
-        } catch (RemoteException e) {
+            while (stub.getNumRequests() <= this.expectedNumOfRequests)
+                Thread.sleep(100);
+        } catch (RemoteException | InterruptedException e) {
             throw new ServerException(e);
         }
     }
