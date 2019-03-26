@@ -1,57 +1,33 @@
 package client;
 
 import shared.logger.Logger;
-import shared.message.GetRequest;
-import shared.message.PostRequest;
-import shared.message.Request;
-import shared.message.Response;
-import shared.Config;
 
 import java.io.*;
-import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
-public class Client {
+public abstract class Client {
+    protected int id;
+    protected Type type;
+    protected Map<Type, Runnable> requests;
 
-    private int id;
-    private Type type;
-    private Map<Type, Runnable> requests;
+    protected Logger logger;
 
-    private Socket socket;
-    private ObjectInputStream inputStream;
-    private ObjectOutputStream outputStream;
+    public abstract void connect();
 
-    private Logger logger;
+    public abstract void run();
 
-    public enum Type {
-        READER,
-        WRITER
-    }
+    public abstract void terminate();
 
-    Client(int id, String mode) {
-        init(id, mode);
-        requests.get(type).run();
-        terminate();
-    }
+    protected abstract void sendGetRequest();
 
-    private void init(int id, String mode) {
-        try {
-            this.id = id;
-            type = mode.equals(ClientArgs.READER) ? Type.READER : Type.WRITER;
-            initRequests();
+    protected abstract void sendPostRequest();
 
-            socket = new Socket(Config.getServerAddress(), Config.getServerPort());
-            System.out.println("--Connected--");
-
-            outputStream = new ObjectOutputStream(socket.getOutputStream());
-            inputStream = new ObjectInputStream(socket.getInputStream());
-
-            initLogger();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    protected void init(int id, String mode) {
+        this.id = id;
+        type = mode.equals(ClientArgs.READER) ? Type.READER : Type.WRITER;
+        initRequests();
+        initLogger();
     }
 
     private void initRequests() {
@@ -67,8 +43,8 @@ public class Client {
                 public void writeHeaders(File logFile) {
                     try {
                         FileWriter writer = new FileWriter(logFile, true);
-                        writer.write("Client Name: " + id + "\n");
-                        writer.write("Client Type: " + type + "\n\n");
+                        writer.write("HttpClient Name: " + id + "\n");
+                        writer.write("HttpClient Type: " + type + "\n\n");
                         writer.write(String.join("\t", "rSeq", "sSeq", type == Type.READER ? "oVal" : "") + "\n");
                         writer.close();
                     } catch (IOException e) {
@@ -76,48 +52,6 @@ public class Client {
                     }
                 }
             };
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void sendGetRequest() {
-        try {
-            Request request = new GetRequest(id);
-            outputStream.writeObject(request);
-            System.out.println("GET request sent");
-
-            Response response = (Response) inputStream.readObject();
-            System.out.println("Response received");
-
-            logger.writeToFile(new String[]{Integer.toString(response.getRequestNum()),
-                    Integer.toString(response.getServiceNum()),
-                    Integer.toString(response.getData())});
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void sendPostRequest() {
-        try {
-            Request request = new PostRequest(id, id);
-            outputStream.writeObject(request);
-            System.out.println("POST request sent");
-
-            Response response = (Response) inputStream.readObject();
-            System.out.println("Response received");
-
-            logger.writeToFile(new String[]{Integer.toString(response.getRequestNum()),
-                    Integer.toString(response.getServiceNum())});
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void terminate() {
-        try {
-            socket.close();
-            System.out.println("--Connection closed--");
         } catch (IOException e) {
             e.printStackTrace();
         }
