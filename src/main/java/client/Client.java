@@ -13,9 +13,11 @@ public abstract class Client {
 
     protected Logger logger;
 
-    public abstract void connect();
+    public void run() {
+        requests.get(type).run();
+    }
 
-    public abstract void run();
+    public abstract void connect();
 
     public abstract void terminate();
 
