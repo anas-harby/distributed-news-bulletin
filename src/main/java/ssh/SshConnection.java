@@ -31,8 +31,8 @@ public class SshConnection {
     }
 
     private void setupSshKeys() throws JSchException {
-        String privateKey = "/home/" + username + "/.ssh/id_rsa";
-        String knownHosts = "/home/" + username + "/.ssh/known_hosts";
+        String privateKey = System.getProperty("user.home") + "/.ssh/id_rsa";
+        String knownHosts = System.getProperty("user.home") + "/.ssh/known_hosts";
 
         this.jsch.addIdentity(privateKey);
         this.jsch.setKnownHosts(knownHosts);
