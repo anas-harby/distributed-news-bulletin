@@ -2,7 +2,6 @@ package server.http;
 
 import server.NewsBulletin;
 import server.Server;
-import server.WorkerThread;
 import shared.Config;
 import shared.Dispatcher;
 import shared.logger.Logger;

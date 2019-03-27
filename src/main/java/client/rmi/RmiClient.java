@@ -1,11 +1,8 @@
 package client.rmi;
 
 import client.Client;
-import client.ClientArgs;
-import client.Type;
 import server.NewsBulletin;
 import server.rmi.NewsBulletinRmiWrapper;
-import shared.logger.Logger;
 
 import java.io.*;
 import java.rmi.NotBoundException;

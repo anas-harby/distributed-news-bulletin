@@ -1,5 +1,6 @@
-package server;
+package server.http;
 
+import server.NewsBulletin;
 import shared.logger.Logger;
 import shared.message.PostRequest;
 import shared.message.Request;
@@ -9,6 +10,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Consumer;
 
 public class WorkerThread implements Runnable {
     private NewsBulletin newsBulletin;
@@ -20,6 +24,8 @@ public class WorkerThread implements Runnable {
     private Logger readLogger;
     private Logger writeLogger;
 
+    private Map<Request.Type, Consumer<Request>> requests;
+
     public WorkerThread(NewsBulletin newsBulletin, Socket socket, Logger readLogger, Logger writeLogger) {
         init(newsBulletin, socket, readLogger, writeLogger);
     }
@@ -29,11 +35,7 @@ public class WorkerThread implements Runnable {
         try {
             Request request = (Request) inputStream.readObject();
             System.out.println(request.getType() + " request received");
-
-            if (request.getType() == Request.Type.GET) // TODO: map
-                handleGetRequest(request);
-            else if (request.getType() == Request.Type.POST)
-                handlePostRequest(request);
+            this.requests.get(request.getType()).accept(request);
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -54,6 +56,10 @@ public class WorkerThread implements Runnable {
 
         this.readLogger = readLogger;
         this.writeLogger = writeLogger;
+
+        this.requests = new HashMap<>();
+        this.requests.put(Request.Type.GET, this::handleGetRequest);
+        this.requests.put(Request.Type.POST, this::handlePostRequest);
     }
 
     private void handleGetRequest(Request request) {

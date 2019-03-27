@@ -7,6 +7,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class Client {
+    public enum Type {
+        READER,
+        WRITER
+    }
     protected int id;
     protected Type type;
     protected Map<Type, Runnable> requests;
