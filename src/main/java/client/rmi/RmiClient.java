@@ -26,11 +26,6 @@ public class RmiClient extends Client {
     }
 
     @Override
-    public void run() {
-        requests.get(type).run();
-    }
-
-    @Override
     public void terminate() {
 
     }
