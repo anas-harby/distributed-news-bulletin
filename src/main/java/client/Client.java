@@ -11,6 +11,7 @@ public abstract class Client {
         READER,
         WRITER
     }
+
     protected int id;
     protected Type type;
     protected Map<Type, Runnable> requests;

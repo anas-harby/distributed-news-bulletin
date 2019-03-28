@@ -35,6 +35,7 @@ public class WorkerThread implements Runnable {
         try {
             Request request = (Request) inputStream.readObject();
             System.out.println(request.getType() + " request received");
+
             this.requests.get(request.getType()).accept(request);
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
