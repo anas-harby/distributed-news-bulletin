@@ -4,7 +4,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class Dispatcher {
-    private ExecutorService executorService = null;
+    private ExecutorService executorService;
 
     public Dispatcher(int numThreads) {
         this.executorService = Executors.newFixedThreadPool(numThreads);
